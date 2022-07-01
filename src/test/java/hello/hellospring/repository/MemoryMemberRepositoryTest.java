@@ -1,14 +1,12 @@
 package hello.hellospring.repository;
 
 import hello.hellospring.domain.Member;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class MemoryMemberRepositoryTest { // 다른 곳에서 사용될 것이 아니므로 public 일 필요 없음
 
