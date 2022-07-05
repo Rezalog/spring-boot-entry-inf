@@ -1,31 +1,22 @@
 package hello.hellospring.service;
 
 import hello.hellospring.domain.Member;
-import hello.hellospring.repository.MemoryMemberRepository;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import hello.hellospring.repository.MemberRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class MemberServiceTest { // cmd + shift + T : 자동 테스트 생성
+@SpringBootTest
+@Transactional
+public class MemberServiceIntegrationTest {
 
-    MemberService memberService;
+    @Autowired MemberService memberService;
     // afterEach 로 DB clear 해주려면 Memory.. instance 필요
-    MemoryMemberRepository memberRepository;
-
-    @BeforeEach // test 전 실행
-    public void beforeEach() {
-        // DI : memoryMemerRepository 를 memberService 인자로 넣어 인스턴스 생성(Dependency Injection)
-        memberRepository = new MemoryMemberRepository();
-        memberService = new MemberService(memberRepository);
-    }
-
-    @AfterEach
-    public void afterEach() {
-        memberRepository.clearStore();
-    }
+    @Autowired MemberRepository memberRepository;
 
     // 테스트는 빌드할때 포함 안되므로 메소드를 한글로 해도 무방하다.
     @Test
@@ -38,7 +29,7 @@ class MemberServiceTest { // cmd + shift + T : 자동 테스트 생성
         Long saveId = memberService.join(member);
 
         // then -- 이렇게 동작해야한다.(실제 검증)
-        // member의 id 와 memberRepository의 saveId가 같은지
+        // member의 id 와 memberService의 saveId가 같은지
         Member findMember = memberRepository.findById(saveId).get();
         assertThat(member.getName()).isEqualTo(findMember.getName());
     }
@@ -59,25 +50,6 @@ class MemberServiceTest { // cmd + shift + T : 자동 테스트 생성
         // 에러 메세지 검증
         assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
 
-/*
-
-        try {
-            memberService.join(member2); // validate.. 에서 터지는 예외를 잡으려면 try..catch
-            fail();
-        } catch(IllegalStateException e) {
-            assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
-        }
-*/
-
-
     }
 
-
-    @Test
-    void findMembers() {
-    }
-
-    @Test
-    void findOne() {
-    }
 }
